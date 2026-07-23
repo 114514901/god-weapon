@@ -23,24 +23,28 @@ public class GodWeaponScreen extends Screen {
         int y = 40;
 
         addRenderableWidget(Button.builder(statusText("invincible", "无敌"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("invincible"));
             GodWeaponItem.toggle(stack, "invincible");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
         y += 24;
 
         addRenderableWidget(Button.builder(statusText("flight", "飞行"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("flight"));
             GodWeaponItem.toggle(stack, "flight");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
         y += 24;
 
         addRenderableWidget(Button.builder(statusText("nightvision", "夜视"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("nightvision"));
             GodWeaponItem.toggle(stack, "nightvision");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
         y += 24;
 
         addRenderableWidget(Button.builder(statusText("veinminer", "范围挖掘"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("veinminer"));
             GodWeaponItem.toggle(stack, "veinminer");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());

@@ -24,5 +24,6 @@ public class GodWeaponMod {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);
         MinecraftForge.EVENT_BUS.register(new KeyBindingHandler());
+        NetworkHandler.register();
     }
 }
