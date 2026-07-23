@@ -66,13 +66,15 @@ public class GodWeaponItem extends Item {
 
     private void clearEntities(Level level, Player player) {
         AABB aabb = player.getBoundingBox().inflate(16);
-        List<Entity> entities = level.getEntities(player, aabb,
-                e -> e != player && e instanceof LivingEntity);
-        for (Entity entity : entities) {
-            if (entity instanceof ServerPlayer target) {
-                if (target.isCreative() || target.isSpectator()) continue;
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb,
+                e -> e != player);
+        for (LivingEntity entity : entities) {
+            if (entity instanceof ServerPlayer target &&
+                    (target.isCreative() || target.isSpectator())) continue;
+            entity.hurt(player.damageSources().playerAttack(player), Float.MAX_VALUE);
+            if (entity.isAlive()) {
+                entity.setRemoved(Entity.RemovalReason.KILLED);
             }
-            entity.setRemoved(Entity.RemovalReason.KILLED);
         }
         player.displayClientMessage(
                 Component.literal("§c清除了 " + entities.size() + " 个实体"), true);
