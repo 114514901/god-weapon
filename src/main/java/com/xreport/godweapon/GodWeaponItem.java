@@ -51,10 +51,10 @@ public class GodWeaponItem extends Item {
             for (int y = -radius; y <= radius; y++) {
                 for (int z = -radius; z <= radius; z++) {
                     BlockPos pos = center.offset(x, y, z);
+                    if (pos.equals(center)) continue;
                     BlockState state = level.getBlockState(pos);
                     if (state.isAir()) continue;
-                    float hardness = state.getDestroySpeed(level, pos);
-                    if (hardness < 0) continue;
+                    if (state.getDestroySpeed(level, pos) < 0) continue;
                     level.destroyBlock(pos, true, player);
                     count++;
                 }
