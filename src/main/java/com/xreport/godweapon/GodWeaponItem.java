@@ -71,8 +71,10 @@ public class GodWeaponItem extends Item {
         for (LivingEntity entity : entities) {
             if (entity instanceof ServerPlayer target &&
                     (target.isCreative() || target.isSpectator())) continue;
-            entity.hurt(player.damageSources().playerAttack(player), Float.MAX_VALUE);
-            if (entity.isAlive()) {
+            try {
+                entity.hurt(player.damageSources().playerAttack(player), Float.MAX_VALUE);
+            } catch (Exception ignored) {}
+            if (entity.isAlive() && !entity.isRemoved()) {
                 entity.setRemoved(Entity.RemovalReason.KILLED);
             }
         }
