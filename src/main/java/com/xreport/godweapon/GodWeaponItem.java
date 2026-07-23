@@ -1,5 +1,6 @@
 package com.xreport.godweapon;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -14,6 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 
@@ -30,10 +33,35 @@ public class GodWeaponItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND) {
-            clearEntities(level, player);
-            player.getCooldowns().addCooldown(this, 40);
+            if (player.isShiftKeyDown() && isEnabled(stack, "veinminer")) {
+                mineArea(level, player, stack);
+            } else {
+                clearEntities(level, player);
+            }
+            player.getCooldowns().addCooldown(this, 20);
         }
         return InteractionResultHolder.success(stack);
+    }
+
+    private void mineArea(Level level, Player player, ItemStack stack) {
+        int radius = 3;
+        BlockPos center = player.blockPosition();
+        int count = 0;
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos pos = center.offset(x, y, z);
+                    BlockState state = level.getBlockState(pos);
+                    if (state.isAir()) continue;
+                    float hardness = state.getDestroySpeed(level, pos);
+                    if (hardness < 0) continue;
+                    level.destroyBlock(pos, true, player);
+                    count++;
+                }
+            }
+        }
+        player.displayClientMessage(
+                Component.literal("§e挖掘了 " + count + " 个方块"), true);
     }
 
     private void clearEntities(Level level, Player player) {
@@ -54,11 +82,13 @@ public class GodWeaponItem extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level level,
                                 List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.literal("§e右键: §c清除附近所有实体"));
+        tooltip.add(Component.literal("§e潜行+右键: §6范围挖掘"));
         tooltip.add(Component.literal("§e手持按 H: §b打开能力菜单"));
         tooltip.add(Component.literal("§a=== 当前状态 ==="));
         tooltip.add(Component.literal("§7无敌: " + (isEnabled(stack, "invincible") ? "§a开启" : "§c关闭")));
         tooltip.add(Component.literal("§7飞行: " + (isEnabled(stack, "flight") ? "§a开启" : "§c关闭")));
         tooltip.add(Component.literal("§7夜视: " + (isEnabled(stack, "nightvision") ? "§a开启" : "§c关闭")));
+        tooltip.add(Component.literal("§7范围挖掘: " + (isEnabled(stack, "veinminer") ? "§a开启" : "§c关闭")));
         super.appendHoverText(stack, level, tooltip, flag);
     }
 

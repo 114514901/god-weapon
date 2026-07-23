@@ -38,6 +38,12 @@ public class GodWeaponScreen extends Screen {
             GodWeaponItem.toggle(stack, "nightvision");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
+        y += 24;
+
+        addRenderableWidget(Button.builder(statusText("veinminer", "范围挖掘"), b -> {
+            GodWeaponItem.toggle(stack, "veinminer");
+            rebuildWidgets();
+        }).pos(cx, y).size(BTN_W, BTN_H).build());
         y += 36;
 
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())
