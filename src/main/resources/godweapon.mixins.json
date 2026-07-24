@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "com.xreport.godweapon.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "godweapon.refmap.json",
+  "mixins": [
+    "EntityRemoveMixin"
+  ]
+}
