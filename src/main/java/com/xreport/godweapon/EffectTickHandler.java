@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -56,8 +57,9 @@ public class EffectTickHandler {
             }
             player.setInvisible(GodWeaponItem.isEnabled(weapon, "stealth"));
 
-            if (GodWeaponItem.isEnabled(weapon, "stealth_enhanced")) {
-                player.setInvisible(true);
+            if (GodWeaponItem.isEnabled(weapon, "stealth")
+                    && player.tickCount % 10 == 0) {
+                clearNearbyTargets(player);
             }
         }
 
@@ -125,6 +127,14 @@ public class EffectTickHandler {
             if (weapon != null && GodWeaponItem.isEnabled(weapon, "stealth")) {
                 event.setCanceled(true);
             }
+        }
+    }
+
+    private static void clearNearbyTargets(Player player) {
+        List<Mob> mobs = player.level().getEntitiesOfClass(Mob.class,
+                player.getBoundingBox().inflate(32));
+        for (Mob mob : mobs) {
+            if (mob.getTarget() == player) mob.setTarget(null);
         }
     }
 
