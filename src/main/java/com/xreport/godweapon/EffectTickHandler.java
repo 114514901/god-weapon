@@ -31,7 +31,6 @@ public class EffectTickHandler {
     private static final Set<String> flyingPlayers = new HashSet<>();
     private static final Queue<BlockPos> mineQueue = new ArrayDeque<>();
     private static Player mineOwner = null;
-    private static int mineTick = 0;
 
     @SubscribeEvent
     public static void onPlayerTick(LivingEvent.LivingTickEvent event) {
@@ -70,17 +69,15 @@ public class EffectTickHandler {
         }
 
         if (player == mineOwner) {
-            mineTick++;
-            if (mineTick % 2 == 0) {
-                int batch = 0;
-                while (!mineQueue.isEmpty() && batch < 20) {
-                    BlockPos pos = mineQueue.poll();
+            int batch = Math.max(50, mineQueue.size() / 5);
+            while (!mineQueue.isEmpty() && batch > 0) {
+                BlockPos pos = mineQueue.poll();
                     BlockState state = player.level().getBlockState(pos);
                     if (!state.isAir() && state.getDestroySpeed(player.level(), pos) >= 0
                             && !pos.equals(player.blockPosition())) {
                         player.level().destroyBlock(pos, true, player);
                     }
-                    batch++;
+                    batch--;
                 }
                 if (mineQueue.isEmpty()) {
                     mineOwner = null;
@@ -183,6 +180,5 @@ public class EffectTickHandler {
             }
         }
         mineOwner = player;
-        mineTick = 0;
     }
 }
