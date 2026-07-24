@@ -37,7 +37,7 @@ public class GodWeaponScreen extends Screen {
         y += 36;
 
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())
-                .pos(cx, y).size(BTN_W + RBTN_W + 4, BTN_H).build());
+                .pos(cx, y).size(BTN_W + SLIDER_W + 4, BTN_H).build());
     }
 
     private void addToggle(int cx, int y, String key, String label) {

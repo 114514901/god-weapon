@@ -3,8 +3,10 @@ package com.xreport.godweapon;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 
 public class RadiusSlider extends AbstractWidget {
 
@@ -46,7 +48,7 @@ public class RadiusSlider extends AbstractWidget {
         graphics.fill(getX() + fillW, getY(), getX() + width, getY() + height, 0xFF444444);
         graphics.renderOutline(getX(), getY(), width, height, 0xFFAAAAAA);
 
-        graphics.drawCenteredString(minecraft.font,
+        graphics.drawCenteredString(Minecraft.getInstance().font,
                 Component.literal("§f范围: " + val),
                 getX() + width / 2, getY() + (height - 8) / 2, 0xFFFFFF);
     }
