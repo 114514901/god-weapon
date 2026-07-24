@@ -19,6 +19,8 @@ public class GodWeaponMod {
 
     public static final RegistryObject<Item> LOLI =
             ITEMS.register("loli_pickaxe", GodWeaponItem::new);
+    public static final RegistryObject<Item> BASIC_LOLI =
+            ITEMS.register("basic_loli", BasicLoliItem::new);
 
     public GodWeaponMod() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

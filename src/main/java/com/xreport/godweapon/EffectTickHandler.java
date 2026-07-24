@@ -34,19 +34,18 @@ public class EffectTickHandler {
         if (player.level().isClientSide) return;
 
         ItemStack weapon = GodWeaponItem.findInInventory(player);
+        boolean hasBasic = findBasicLoli(player) != null;
         String name = player.getName().getString();
 
+        boolean flying = (weapon != null && GodWeaponItem.isEnabled(weapon, "flight"))
+                || (hasBasic && findBasicLoli(player).getOrCreateTag().getBoolean("flight"));
+
+        if (flying) {
+            flyingPlayers.add(name);
+            player.getAbilities().mayfly = true;
+        }
+
         if (weapon != null) {
-            if (GodWeaponItem.isEnabled(weapon, "flight")) {
-                flyingPlayers.add(name);
-                player.getAbilities().mayfly = true;
-            } else if (flyingPlayers.contains(name)) {
-                flyingPlayers.remove(name);
-                if (!player.isCreative() && !player.isSpectator()) {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                }
-            }
             if (GodWeaponItem.isEnabled(weapon, "nightvision")) {
                 player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
             }
@@ -55,13 +54,13 @@ public class EffectTickHandler {
             if (GodWeaponItem.isEnabled(weapon, "repel")) {
                 repelEntities(player, weapon);
             }
-        } else {
-            if (flyingPlayers.contains(name)) {
-                flyingPlayers.remove(name);
-                if (!player.isCreative() && !player.isSpectator()) {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                }
+        }
+
+        if (!flying && flyingPlayers.contains(name)) {
+            flyingPlayers.remove(name);
+            if (!player.isCreative() && !player.isSpectator()) {
+                player.getAbilities().mayfly = false;
+                player.getAbilities().flying = false;
             }
         }
 
@@ -122,6 +121,13 @@ public class EffectTickHandler {
             entity.setDeltaMovement(entity.getDeltaMovement().add(dir.scale(0.5)));
             entity.hurtMarked = true;
         }
+    }
+
+    private static ItemStack findBasicLoli(Player player) {
+        for (ItemStack s : player.getInventory().items)
+            if (s.getItem() instanceof BasicLoliItem) return s;
+        if (player.getOffhandItem().getItem() instanceof BasicLoliItem) return player.getOffhandItem();
+        return null;
     }
 
     @SubscribeEvent
