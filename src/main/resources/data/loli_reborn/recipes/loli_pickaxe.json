@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " N ",
+    "N LN",
+    " N "
+  ],
+  "key": {
+    "N": { "item": "minecraft:nether_star" },
+    "L": { "item": "loli_reborn:basic_loli" }
+  },
+  "result": {
+    "item": "loli_reborn:loli_pickaxe"
+  }
+}
