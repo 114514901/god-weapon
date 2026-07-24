@@ -21,6 +21,8 @@ public class NetworkHandler {
     public static void register() {
         CHANNEL.registerMessage(0, TogglePacket.class,
                 TogglePacket::encode, TogglePacket::decode, TogglePacket::handle);
+        CHANNEL.registerMessage(1, CycleRadiusPacket.class,
+                CycleRadiusPacket::encode, CycleRadiusPacket::decode, CycleRadiusPacket::handle);
     }
 
     public record TogglePacket(String key) {
@@ -35,6 +37,24 @@ public class NetworkHandler {
                 ItemStack stack = player.getMainHandItem();
                 if (stack.getItem() instanceof GodWeaponItem) {
                     GodWeaponItem.toggle(stack, key);
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    public record CycleRadiusPacket(String key) {
+        public void encode(FriendlyByteBuf buf) { buf.writeUtf(key); }
+        public static CycleRadiusPacket decode(FriendlyByteBuf buf) {
+            return new CycleRadiusPacket(buf.readUtf());
+        }
+        public void handle(Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                ServerPlayer player = ctx.get().getSender();
+                if (player == null) return;
+                ItemStack stack = player.getMainHandItem();
+                if (stack.getItem() instanceof GodWeaponItem) {
+                    GodWeaponItem.cycleRadius(stack, key);
                 }
             });
             ctx.get().setPacketHandled(true);

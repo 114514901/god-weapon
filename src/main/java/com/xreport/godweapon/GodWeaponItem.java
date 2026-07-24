@@ -43,7 +43,8 @@ public class GodWeaponItem extends Item {
     }
 
     private void clearEntities(Level level, Player player) {
-        AABB aabb = player.getBoundingBox().inflate(16);
+        int radius = getRadius(player.getMainHandItem(), "clearRadius");
+        AABB aabb = player.getBoundingBox().inflate(radius);
         List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb,
                 e -> e != player);
         for (LivingEntity entity : entities) {
@@ -61,7 +62,7 @@ public class GodWeaponItem extends Item {
     }
 
     private void mineArea(Level level, Player player) {
-        int radius = 3;
+        int radius = getRadius(player.getMainHandItem(), "mineRadius");
         BlockPos center = player.blockPosition();
         int count = 0;
         for (int x = -radius; x <= radius; x++) {
@@ -109,6 +110,23 @@ public class GodWeaponItem extends Item {
     public static void toggle(ItemStack stack, String key) {
         boolean current = isEnabled(stack, key);
         stack.getOrCreateTag().putBoolean(key, !current);
+    }
+
+    public static int getRadius(ItemStack stack, String key) {
+        return Math.max(1, stack.getOrCreateTag().getInt(key));
+    }
+
+    public static void cycleRadius(ItemStack stack, String key) {
+        int[] presets = {4, 8, 16, 32};
+        int current = getRadius(stack, key);
+        int next = presets[0];
+        for (int i = 0; i < presets.length; i++) {
+            if (presets[i] == current) {
+                next = presets[(i + 1) % presets.length];
+                break;
+            }
+        }
+        stack.getOrCreateTag().putInt(key, next);
     }
 
     public static ItemStack findInInventory(Player player) {

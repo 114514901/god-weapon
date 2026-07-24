@@ -9,8 +9,9 @@ import net.minecraft.world.item.ItemStack;
 public class GodWeaponScreen extends Screen {
 
     private final ItemStack stack;
-    private static final int BTN_W = 150;
+    private static final int BTN_W = 140;
     private static final int BTN_H = 20;
+    private static final int RBTN_W = 40;
 
     public GodWeaponScreen(ItemStack stack) {
         super(Component.literal("God Weapon 能力菜单"));
@@ -22,43 +23,44 @@ public class GodWeaponScreen extends Screen {
         int cx = width / 2 - BTN_W / 2;
         int y = 40;
 
-        addRenderableWidget(Button.builder(statusText("invincible", "无敌"), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("invincible"));
-            GodWeaponItem.toggle(stack, "invincible");
-            rebuildWidgets();
-        }).pos(cx, y).size(BTN_W, BTN_H).build());
+        addToggle(cx, y, "invincible", "无敌");
         y += 24;
-
-        addRenderableWidget(Button.builder(statusText("flight", "飞行"), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("flight"));
-            GodWeaponItem.toggle(stack, "flight");
-            rebuildWidgets();
-        }).pos(cx, y).size(BTN_W, BTN_H).build());
+        addToggle(cx, y, "flight", "飞行");
         y += 24;
-
-        addRenderableWidget(Button.builder(statusText("nightvision", "夜视"), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("nightvision"));
-            GodWeaponItem.toggle(stack, "nightvision");
-            rebuildWidgets();
-        }).pos(cx, y).size(BTN_W, BTN_H).build());
+        addToggle(cx, y, "nightvision", "夜视");
         y += 24;
-
-        addRenderableWidget(Button.builder(statusText("veinminer", "范围挖掘"), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("veinminer"));
-            GodWeaponItem.toggle(stack, "veinminer");
-            rebuildWidgets();
-        }).pos(cx, y).size(BTN_W, BTN_H).build());
+        addRadius(cx, y, "veinminer", "mineRadius", "范围挖掘");
         y += 24;
-
-        addRenderableWidget(Button.builder(statusText("repel", "生物排斥"), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("repel"));
-            GodWeaponItem.toggle(stack, "repel");
-            rebuildWidgets();
-        }).pos(cx, y).size(BTN_W, BTN_H).build());
+        addRadius(cx, y, "repel", "repelRadius", "生物排斥");
+        y += 24;
+        addRadius(cx, y, "clearRadius", "clearRadius", "清除范围");
         y += 36;
 
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())
-                .pos(cx, y).size(BTN_W, BTN_H).build());
+                .pos(cx, y).size(BTN_W + RBTN_W + 4, BTN_H).build());
+    }
+
+    private void addToggle(int cx, int y, String key, String label) {
+        addRenderableWidget(Button.builder(statusText(key, label), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket(key));
+            GodWeaponItem.toggle(stack, key);
+            rebuildWidgets();
+        }).pos(cx, y).size(BTN_W + RBTN_W + 4, BTN_H).build());
+    }
+
+    private void addRadius(int cx, int y, String key, String radiusKey, String label) {
+        addRenderableWidget(Button.builder(statusText(key, label), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket(key));
+            GodWeaponItem.toggle(stack, key);
+            rebuildWidgets();
+        }).pos(cx, y).size(BTN_W, BTN_H).build());
+
+        int r = GodWeaponItem.getRadius(stack, radiusKey);
+        addRenderableWidget(Button.builder(Component.literal("§7" + r), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.CycleRadiusPacket(radiusKey));
+            GodWeaponItem.cycleRadius(stack, radiusKey);
+            rebuildWidgets();
+        }).pos(cx + BTN_W + 4, y).size(RBTN_W, BTN_H).build());
     }
 
     private Component statusText(String key, String label) {

@@ -112,7 +112,10 @@ public class EffectTickHandler {
     }
 
     private static void repelEntities(Player player) {
-        AABB aabb = player.getBoundingBox().inflate(8);
+        ItemStack weapon = GodWeaponItem.findInInventory(player);
+        if (weapon == null) return;
+        int radius = GodWeaponItem.getRadius(weapon, "repelRadius");
+        AABB aabb = player.getBoundingBox().inflate(radius);
         List<LivingEntity> entities = player.level().getEntitiesOfClass(
                 LivingEntity.class, aabb, e -> e != player);
         Vec3 center = player.position();
