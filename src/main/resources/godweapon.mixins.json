@@ -5,6 +5,7 @@
   "refmap": "godweapon.refmap.json",
   "mixins": [
     "EntityRemoveMixin",
-    "EntityFilterMixin"
+    "EntityFilterMixin$LevelMixin",
+    "EntityFilterMixin$ServerLevelMixin"
   ]
 }
