@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -54,6 +55,10 @@ public class EffectTickHandler {
                 repelEntities(player, weapon);
             }
             player.setInvisible(GodWeaponItem.isEnabled(weapon, "stealth"));
+
+            if (GodWeaponItem.isEnabled(weapon, "stealth_enhanced")) {
+                player.setInvisible(true);
+            }
         }
 
         if (!flying && flyingPlayers.contains(name)) {
@@ -111,6 +116,16 @@ public class EffectTickHandler {
         player.attack(attacker);
         float dmg = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.3F;
         player.setHealth(Math.min(player.getHealth() + dmg, player.getMaxHealth()));
+    }
+
+    @SubscribeEvent
+    public static void onTargetChange(LivingChangeTargetEvent event) {
+        if (event.getNewTarget() instanceof Player player) {
+            ItemStack weapon = GodWeaponItem.findInInventory(player);
+            if (weapon != null && GodWeaponItem.isEnabled(weapon, "stealth")) {
+                event.setCanceled(true);
+            }
+        }
     }
 
     private static void repelEntities(Player player, ItemStack weapon) {

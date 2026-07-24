@@ -20,7 +20,7 @@ public class EntityFilterMixin {
         return entities.stream().filter(e -> {
             if (e instanceof Player player) {
                 var weapon = GodWeaponItem.findInInventory(player);
-                return weapon == null || !GodWeaponItem.isEnabled(weapon, "stealth");
+                return weapon == null || !GodWeaponItem.isEnabled(weapon, "stealth_enhanced");
             }
             return true;
         }).collect(Collectors.toList());

@@ -70,6 +70,8 @@ public class GodWeaponItem extends Item {
         addStatus(tooltip, stack, "nightvision", "§d夜视");
         addStatusWithRange(tooltip, stack, "veinminer", "§6范围挖掘", "mineRadius");
         addStatusWithRange(tooltip, stack, "repel", "§a生物排斥", "repelRadius");
+        addStatus(tooltip, stack, "stealth", "§8隐身");
+        addStatus(tooltip, stack, "stealth_enhanced", "§7增强隐身");
         tooltip.add(Component.literal("§7清除范围: §f" + getRadius(stack, "clearRadius")));
         super.appendHoverText(stack, level, tooltip, flag);
     }
@@ -81,10 +83,6 @@ public class GodWeaponItem extends Item {
     private static void addStatusWithRange(List<Component> t, ItemStack s, String k, String label, String rk) {
         t.add(Component.literal(label + ": " + (isEnabled(s, k) ? "§a●" : "§8●")
                 + " §7[" + getRadius(s, rk) + "]"));
-    }
-
-    private static void addStatus(List<Component> t, ItemStack s, String k, String label) {
-        t.add(Component.literal(label + ": " + (isEnabled(s, k) ? "§a●" : "§8●")));
     }
 
     @Override

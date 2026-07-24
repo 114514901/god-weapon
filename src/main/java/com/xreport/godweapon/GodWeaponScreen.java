@@ -68,6 +68,7 @@ public class GodWeaponScreen extends Screen {
         items.add(() -> addRadius(cx, y, "repel", "repelRadius", "§a生物排斥"));
         items.add(() -> addSliderOnly(cx, y, "clearRadius", "§4清除范围"));
         items.add(() -> addToggle(cx, y, "stealth", "§8隐身"));
+        items.add(() -> addToggle(cx, y, "stealth_enhanced", "§7增强隐身"));
         return items;
     }
 
