@@ -63,7 +63,9 @@ public class EffectTickHandler {
         }
 
         if (player == mineOwner) {
-            int batch = Math.max(50, mineQueue.size() / 5);
+            int batch = mineQueue.size() > 100000
+                    ? Math.max(50, mineQueue.size() / 20)
+                    : Math.max(50, mineQueue.size() / 5);
             while (!mineQueue.isEmpty() && batch > 0) {
                 BlockPos pos = mineQueue.poll();
                 BlockState state = player.level().getBlockState(pos);
