@@ -33,7 +33,7 @@ public class GodWeaponScreen extends Screen {
         y += 24;
         addRadius(cx, y, "repel", "repelRadius", "生物排斥");
         y += 24;
-        addRadius(cx, y, "clearRadius", "clearRadius", "清除范围");
+        addSliderOnly(cx, y, "clearRadius", "清除范围");
         y += 36;
 
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())
@@ -55,6 +55,13 @@ public class GodWeaponScreen extends Screen {
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
 
+        addRenderableWidget(new RadiusSlider(
+                cx + BTN_W + 4, y, SLIDER_W, BTN_H, stack, radiusKey));
+    }
+
+    private void addSliderOnly(int cx, int y, String radiusKey, String label) {
+        addRenderableWidget(Button.builder(Component.literal("§7" + label + ":"), b -> {})
+                .pos(cx, y).size(BTN_W, BTN_H).build());
         addRenderableWidget(new RadiusSlider(
                 cx + BTN_W + 4, y, SLIDER_W, BTN_H, stack, radiusKey));
     }
