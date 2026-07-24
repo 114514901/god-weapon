@@ -21,35 +21,38 @@ public class LoliUpgradeRecipe extends CustomRecipe {
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
         boolean hasBasic = false;
-        int stars = 0, netherite = 0, diamond = 0, emerald = 0;
+        int stars = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack s = inv.getItem(i);
             if (s.isEmpty()) continue;
             if (s.getItem() instanceof BasicLoliItem) {
                 if (hasBasic) return false;
                 hasBasic = true;
+                if (!isFullyUpgraded(s)) return false;
             } else if (s.is(Items.NETHER_STAR)) {
                 stars += s.getCount();
-            } else if (s.is(Items.NETHERITE_INGOT)) {
-                netherite += s.getCount();
-            } else if (s.is(Items.DIAMOND)) {
-                diamond += s.getCount();
-            } else if (s.is(Items.EMERALD)) {
-                emerald += s.getCount();
-            } else if (s.is(Items.GOLD_INGOT)) {
-                emerald += s.getCount(); // count gold too, just use existing counter
-            } else if (s.is(Items.IRON_INGOT)) {
-                emerald += s.getCount();
-            } else if (s.is(Items.LAPIS_LAZULI)) {
-                emerald += s.getCount();
-            } else if (s.is(Items.OBSIDIAN)) {
-                emerald += s.getCount();
             } else {
                 return false;
             }
         }
-        return hasBasic && stars >= 64 && netherite >= 64
-                && diamond >= 64 && emerald >= 576; // 9 stacks misc
+        return hasBasic && stars >= 64;
+    }
+
+    private boolean isFullyUpgraded(ItemStack stack) {
+        return checkLevel(stack, "digSpeed", 4)
+                && checkLevel(stack, "digLevel", 3)
+                && checkLevel(stack, "digRange", 4)
+                && checkLevel(stack, "attackSpeed", 3)
+                && checkLevel(stack, "fortune", 3)
+                && checkLevel(stack, "buff", 3)
+                && checkLevel(stack, "hitRange", 3)
+                && checkLevel(stack, "dodge", 3)
+                && checkLevel(stack, "antiInjury", 3)
+                && checkLevel(stack, "fly", 1);
+    }
+
+    private boolean checkLevel(ItemStack s, String key, int max) {
+        return s.getOrCreateTag().getInt(key) >= max;
     }
 
     @Override

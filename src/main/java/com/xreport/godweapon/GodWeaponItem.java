@@ -60,16 +60,26 @@ public class GodWeaponItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level,
                                 List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.literal("§e右键: §c清除附近所有实体"));
-        tooltip.add(Component.literal("§e左键: §6范围挖掘"));
-        tooltip.add(Component.literal("§e手持按 H: §b打开能力菜单"));
-        tooltip.add(Component.literal("§a=== 当前状态 ==="));
-        tooltip.add(Component.literal("§7无敌: " + (isEnabled(stack, "invincible") ? "§a开启" : "§c关闭")));
-        tooltip.add(Component.literal("§7飞行: " + (isEnabled(stack, "flight") ? "§a开启" : "§c关闭")));
-        tooltip.add(Component.literal("§7夜视: " + (isEnabled(stack, "nightvision") ? "§a开启" : "§c关闭")));
-        tooltip.add(Component.literal("§7范围挖掘: " + (isEnabled(stack, "veinminer") ? "§a开启" : "§c关闭")));
-        tooltip.add(Component.literal("§7生物排斥: " + (isEnabled(stack, "repel") ? "§a开启" : "§c关闭")));
+        tooltip.add(Component.literal("§d===== 氪金萝莉 ====="));
+        tooltip.add(Component.literal("§e右键§7清除实体 §e左键§7范围挖掘"));
+        tooltip.add(Component.literal("§eH§7打开能力配置"));
+        tooltip.add(Component.literal(""));
+        addStatus(tooltip, stack, "invincible", "§c无敌");
+        addStatus(tooltip, stack, "flight", "§b飞行");
+        addStatus(tooltip, stack, "nightvision", "§d夜视");
+        addStatusWithRange(tooltip, stack, "veinminer", "§6范围挖掘", "mineRadius");
+        addStatusWithRange(tooltip, stack, "repel", "§a生物排斥", "repelRadius");
+        tooltip.add(Component.literal("§7清除范围: §f" + getRadius(stack, "clearRadius")));
         super.appendHoverText(stack, level, tooltip, flag);
+    }
+
+    private static void addStatus(List<Component> t, ItemStack s, String k, String label) {
+        t.add(Component.literal(label + ": " + (isEnabled(s, k) ? "§a●" : "§8●")));
+    }
+
+    private static void addStatusWithRange(List<Component> t, ItemStack s, String k, String label, String rk) {
+        t.add(Component.literal(label + ": " + (isEnabled(s, k) ? "§a●" : "§8●")
+                + " §7[" + getRadius(s, rk) + "]"));
     }
 
     @Override

@@ -29,6 +29,9 @@ public class GodWeaponMod {
     public static final RegistryObject<RecipeSerializer<?>> LOLI_UPGRADE_SERIALIZER =
             SERIALIZERS.register("loli_upgrade",
                     () -> new SimpleCraftingRecipeSerializer<>(LoliUpgradeRecipe::new));
+    public static final RegistryObject<RecipeSerializer<?>> LOLI_MATERIAL_SERIALIZER =
+            SERIALIZERS.register("loli_material",
+                    LoliMaterialRecipe.Serializer::new);
 
     public GodWeaponMod() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
