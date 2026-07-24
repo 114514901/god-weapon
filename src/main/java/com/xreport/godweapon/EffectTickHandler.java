@@ -2,8 +2,13 @@ package com.xreport.godweapon;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,6 +48,10 @@ public class EffectTickHandler {
                 player.addEffect(new MobEffectInstance(
                         MobEffects.NIGHT_VISION, 400, 0, false, false));
             }
+            player.addEffect(new MobEffectInstance(
+                    MobEffects.DIG_SPEED, 400, 0, false, false));
+            player.addEffect(new MobEffectInstance(
+                    MobEffects.DAMAGE_BOOST, 400, 0, false, false));
         } else {
             String name = player.getName().getString();
             if (flyingPlayers.contains(name)) {
@@ -61,8 +70,39 @@ public class EffectTickHandler {
         if (player.level().isClientSide) return;
 
         ItemStack weapon = GodWeaponItem.findInInventory(player);
-        if (weapon != null && GodWeaponItem.isEnabled(weapon, "invincible")) {
+        if (weapon == null) return;
+
+        if (GodWeaponItem.isEnabled(weapon, "invincible")) {
             event.setCanceled(true);
         }
+        if (GodWeaponItem.isEnabled(weapon, "flight")
+                && event.getSource().getMsgId().equals("fall")) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttack(LivingAttackEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
+
+        ItemStack weapon = GodWeaponItem.findInInventory(player);
+        if (weapon == null || !GodWeaponItem.isEnabled(weapon, "invincible")) return;
+
+        Entity source = event.getSource().getDirectEntity();
+        LivingEntity attacker = null;
+        if (source instanceof Arrow arrow && arrow.getOwner() instanceof LivingEntity) {
+            attacker = (LivingEntity) arrow.getOwner();
+        } else if (source instanceof LivingEntity && source != player) {
+            attacker = (LivingEntity) source;
+        }
+        if (attacker == null) return;
+
+        int cooldown = player.attackStrengthTicker;
+        player.attack(attacker);
+        player.attackStrengthTicker = cooldown;
+
+        float damage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.3F;
+        player.setHealth(Math.min(player.getHealth() + damage, player.getMaxHealth()));
     }
 }
