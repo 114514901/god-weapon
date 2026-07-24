@@ -66,9 +66,8 @@ public class GodWeaponScreen extends Screen {
         items.add(() -> addToggle(cx, y, "nightvision", "§d夜视"));
         items.add(() -> addRadius(cx, y, "veinminer", "mineRadius", "§6范围挖掘"));
         items.add(() -> addRadius(cx, y, "repel", "repelRadius", "§a生物排斥"));
+        items.add(() -> addStealth(cx, y));
         items.add(() -> addSliderOnly(cx, y, "clearRadius", "§4清除范围"));
-        items.add(() -> addToggle(cx, y, "stealth", "§8隐身"));
-        items.add(() -> addToggle(cx, y, "stealth_enhanced", "§7增强隐身"));
         return items;
     }
 
@@ -96,7 +95,28 @@ public class GodWeaponScreen extends Screen {
         y[0] += 24;
     }
 
-    private void addSliderOnly(int cx, int[] y, String radiusKey, String label) {
+    private void addStealth(int cx, int[] y) {
+        boolean on = GodWeaponItem.isEnabled(stack, "stealth");
+        addRenderableWidget(Button.builder(
+                Component.literal((on ? "§a✓ " : "§7✗ ") + "§8隐身"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("stealth"));
+            GodWeaponItem.toggle(stack, "stealth");
+            rebuildWidgets();
+        }).pos(cx, y[0]).size(BTN_W, BTN_H).build());
+
+        boolean enhanced = GodWeaponItem.isEnabled(stack, "stealth_enhanced");
+        Component cb = on
+                ? Component.literal((enhanced ? "§a☑" : "§7☐") + " §7增强")
+                : Component.literal("§8☐ §7增强");
+        addRenderableWidget(Button.builder(cb, b -> {
+            if (on) {
+                NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("stealth_enhanced"));
+                GodWeaponItem.toggle(stack, "stealth_enhanced");
+                rebuildWidgets();
+            }
+        }).pos(cx + BTN_W + 4, y[0]).size(60, BTN_H).build());
+        y[0] += 24;
+    }
         addRenderableWidget(Button.builder(Component.literal(label), b -> {})
                 .pos(cx, y[0]).size(BTN_W, BTN_H).build());
         addRenderableWidget(new RadiusSlider(
