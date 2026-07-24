@@ -98,9 +98,7 @@ public class EffectTickHandler {
         }
         if (attacker == null) return;
 
-        int cooldown = player.attackStrengthTicker;
         player.attack(attacker);
-        player.attackStrengthTicker = cooldown;
 
         float damage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.3F;
         player.setHealth(Math.min(player.getHealth() + damage, player.getMaxHealth()));
