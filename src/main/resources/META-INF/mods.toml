@@ -3,20 +3,20 @@ loaderVersion="[47,)"
 license="GPL-3.0"
 
 [[mods]]
-modId="godweapon"
+modId="loli_reborn"
 version="1.0"
-displayName="God Weapon"
-description="氪金萝莉风格多功能武器"
+displayName="氪金萝莉-重生"
+description="氪金萝莉风格多功能武器 - 无敌、飞行、范围挖掘、清除实体"
 authors=["114514901"]
 
-[[dependencies.godweapon]]
+[[dependencies.loli_reborn]]
 modId="forge"
 mandatory=true
 versionRange="[47,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.godweapon]]
+[[dependencies.loli_reborn]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.20.1,1.20.2)"

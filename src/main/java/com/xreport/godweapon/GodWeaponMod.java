@@ -9,16 +9,16 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-@Mod(GodWeaponMod.MODID)
+@Mod("loli_reborn")
 public class GodWeaponMod {
 
-    public static final String MODID = "godweapon";
+    public static final String MODID = "loli_reborn";
 
     private static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    public static final RegistryObject<Item> GOD_WEAPON =
-            ITEMS.register("god_weapon", GodWeaponItem::new);
+    public static final RegistryObject<Item> LOLI =
+            ITEMS.register("loli_pickaxe", GodWeaponItem::new);
 
     public GodWeaponMod() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

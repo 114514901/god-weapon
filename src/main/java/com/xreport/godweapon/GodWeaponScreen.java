@@ -14,7 +14,7 @@ public class GodWeaponScreen extends Screen {
     private static final int SLIDER_W = 60;
 
     public GodWeaponScreen(ItemStack stack) {
-        super(Component.literal("God Weapon 能力菜单"));
+        super(Component.literal("氪金萝莉 能力菜单"));
         this.stack = stack;
     }
 
@@ -74,7 +74,7 @@ public class GodWeaponScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics);
-        graphics.drawCenteredString(font, "God Weapon 能力菜单", width / 2, 15, 0xFFFFFF);
+        graphics.drawCenteredString(font, "氪金萝莉 能力菜单", width / 2, 15, 0xFFFFFF);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
