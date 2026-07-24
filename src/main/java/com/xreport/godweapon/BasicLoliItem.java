@@ -12,9 +12,14 @@ public class BasicLoliItem extends DiggerItem {
 
     public BasicLoliItem() {
         super(1, -2.8f, Tiers.DIAMOND, BlockTags.MINEABLE_WITH_PICKAXE,
-                new Properties().stacksTo(1).rarity(Rarity.RARE).fireResistant()
-                        .durability(-1));
+                new Properties().stacksTo(1).rarity(Rarity.RARE).fireResistant());
     }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return false; }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) { return 0; }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level,
