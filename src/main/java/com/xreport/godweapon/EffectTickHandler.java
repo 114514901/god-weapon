@@ -41,6 +41,7 @@ public class EffectTickHandler {
         if (flying) {
             flyingPlayers.add(name);
             player.getAbilities().mayfly = true;
+            player.onUpdateAbilities();
         }
 
         if (weapon != null) {
@@ -59,6 +60,7 @@ public class EffectTickHandler {
             if (!player.isCreative() && !player.isSpectator()) {
                 player.getAbilities().mayfly = false;
                 player.getAbilities().flying = false;
+                player.onUpdateAbilities();
             }
         }
 
