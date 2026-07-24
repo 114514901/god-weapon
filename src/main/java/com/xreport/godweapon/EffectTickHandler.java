@@ -1,5 +1,6 @@
 package com.xreport.godweapon;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -8,22 +9,29 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 @Mod.EventBusSubscriber
 public class EffectTickHandler {
 
     private static final Set<String> flyingPlayers = new HashSet<>();
+    private static final Queue<BlockPos> mineQueue = new ArrayDeque<>();
+    private static Player mineOwner = null;
+    private static int mineTick = 0;
 
     @SubscribeEvent
     public static void onPlayerTick(LivingEvent.LivingTickEvent event) {
@@ -58,6 +66,25 @@ public class EffectTickHandler {
 
             if (GodWeaponItem.isEnabled(weapon, "repel")) {
                 repelEntities(player);
+            }
+        }
+
+        if (player == mineOwner) {
+            mineTick++;
+            if (mineTick % 2 == 0) {
+                int batch = 0;
+                while (!mineQueue.isEmpty() && batch < 20) {
+                    BlockPos pos = mineQueue.poll();
+                    BlockState state = player.level().getBlockState(pos);
+                    if (!state.isAir() && state.getDestroySpeed(player.level(), pos) >= 0
+                            && !pos.equals(player.blockPosition())) {
+                        player.level().destroyBlock(pos, true, player);
+                    }
+                    batch++;
+                }
+                if (mineQueue.isEmpty()) {
+                    mineOwner = null;
+                }
             }
         } else {
             String name = player.getName().getString();
@@ -125,5 +152,37 @@ public class EffectTickHandler {
                     dir.scale(0.5)));
             entity.hurtMarked = true;
         }
+    }
+
+    @SubscribeEvent
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) return;
+        ItemStack weapon = GodWeaponItem.findInInventory(player);
+        if (weapon == null || !GodWeaponItem.isEnabled(weapon, "veinminer")) return;
+        if (player.getMainHandItem().getItem() instanceof GodWeaponItem) {
+            event.setCanceled(true);
+            queueMine(player, weapon);
+        }
+    }
+
+    private static void queueMine(Player player, ItemStack weapon) {
+        int radius = GodWeaponItem.getRadius(weapon, "mineRadius");
+        BlockPos center = player.blockPosition();
+        mineQueue.clear();
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos pos = center.offset(x, y, z);
+                    if (pos.equals(player.blockPosition())) continue;
+                    BlockState state = player.level().getBlockState(pos);
+                    if (state.isAir()) continue;
+                    if (state.getDestroySpeed(player.level(), pos) < 0) continue;
+                    mineQueue.add(pos.immutable());
+                }
+            }
+        }
+        mineOwner = player;
+        mineTick = 0;
     }
 }

@@ -32,11 +32,7 @@ public class GodWeaponItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND) {
-            if (player.isShiftKeyDown() && isEnabled(stack, "veinminer")) {
-                mineArea(level, player);
-            } else {
-                clearEntities(level, player);
-            }
+            clearEntities(level, player);
             player.getCooldowns().addCooldown(this, 20);
         }
         return InteractionResultHolder.success(stack);
@@ -61,32 +57,11 @@ public class GodWeaponItem extends Item {
                 Component.literal("§c清除了 " + entities.size() + " 个实体"), true);
     }
 
-    private void mineArea(Level level, Player player) {
-        int radius = getRadius(player.getMainHandItem(), "mineRadius");
-        BlockPos center = player.blockPosition();
-        int count = 0;
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    BlockPos pos = center.offset(x, y, z);
-                    if (pos.equals(center)) continue;
-                    BlockState state = level.getBlockState(pos);
-                    if (state.isAir()) continue;
-                    if (state.getDestroySpeed(level, pos) < 0) continue;
-                    level.destroyBlock(pos, true, player);
-                    count++;
-                }
-            }
-        }
-        player.displayClientMessage(
-                Component.literal("§e挖掘了 " + count + " 个方块"), true);
-    }
-
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level,
                                 List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.literal("§e右键: §c清除附近所有实体"));
-        tooltip.add(Component.literal("§e潜行+右键: §6范围挖掘"));
+        tooltip.add(Component.literal("§e左键: §6范围挖掘"));
         tooltip.add(Component.literal("§e手持按 H: §b打开能力菜单"));
         tooltip.add(Component.literal("§a=== 当前状态 ==="));
         tooltip.add(Component.literal("§7无敌: " + (isEnabled(stack, "invincible") ? "§a开启" : "§c关闭")));
