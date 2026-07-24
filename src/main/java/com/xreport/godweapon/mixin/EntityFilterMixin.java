@@ -1,18 +1,17 @@
 package com.xreport.godweapon.mixin;
 
 import com.xreport.godweapon.GodWeaponItem;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Mixin(ServerLevel.class)
+@Mixin(Level.class)
 public class EntityFilterMixin {
 
     @ModifyVariable(method = "getEntities", at = @At("RETURN"), ordinal = 0)

@@ -39,21 +39,21 @@ public class GodWeaponScreen extends Screen {
             items.get(i).run();
         }
 
-        int bottomY = 40 + ITEMS_PER_PAGE * 24;
+        int bottomY = height - 30;
         if (page > 0) {
             addRenderableWidget(Button.builder(Component.literal("◀"), b -> {
                 page--;
                 rebuildWidgets();
-            }).pos(cx - 60, bottomY).size(20, 20).build());
+            }).pos(width / 2 - 80, bottomY).size(20, 20).build());
         }
         Component pageText = Component.literal("§7" + (page + 1) + "/" + totalPages);
         int pw = font.width(pageText) + 10;
-        addRenderableWidget(Button.builder(pageText, b -> {}).pos(cx - pw / 2, bottomY).size(pw, 20).build());
+        addRenderableWidget(Button.builder(pageText, b -> {}).pos(width / 2 - pw / 2, bottomY).size(pw, 20).build());
         if (page < totalPages - 1) {
             addRenderableWidget(Button.builder(Component.literal("▶"), b -> {
                 page++;
                 rebuildWidgets();
-            }).pos(cx + 60, bottomY).size(20, 20).build());
+            }).pos(width / 2 + 60, bottomY).size(20, 20).build());
         }
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())
                 .pos(width / 2 - 40, bottomY).size(80, 20).build());
