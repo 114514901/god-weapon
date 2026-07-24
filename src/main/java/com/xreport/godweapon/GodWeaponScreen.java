@@ -48,6 +48,13 @@ public class GodWeaponScreen extends Screen {
             GodWeaponItem.toggle(stack, "veinminer");
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
+        y += 24;
+
+        addRenderableWidget(Button.builder(statusText("repel", "生物排斥"), b -> {
+            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket("repel"));
+            GodWeaponItem.toggle(stack, "repel");
+            rebuildWidgets();
+        }).pos(cx, y).size(BTN_W, BTN_H).build());
         y += 36;
 
         addRenderableWidget(Button.builder(Component.literal("关闭"), b -> onClose())

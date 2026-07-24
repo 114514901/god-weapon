@@ -8,6 +8,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -15,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Mod.EventBusSubscriber
@@ -52,6 +55,10 @@ public class EffectTickHandler {
                     MobEffects.DIG_SPEED, 400, 0, false, false));
             player.addEffect(new MobEffectInstance(
                     MobEffects.DAMAGE_BOOST, 400, 0, false, false));
+
+            if (GodWeaponItem.isEnabled(weapon, "repel")) {
+                repelEntities(player);
+            }
         } else {
             String name = player.getName().getString();
             if (flyingPlayers.contains(name)) {
@@ -102,5 +109,18 @@ public class EffectTickHandler {
 
         float damage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.3F;
         player.setHealth(Math.min(player.getHealth() + damage, player.getMaxHealth()));
+    }
+
+    private static void repelEntities(Player player) {
+        AABB aabb = player.getBoundingBox().inflate(8);
+        List<LivingEntity> entities = player.level().getEntitiesOfClass(
+                LivingEntity.class, aabb, e -> e != player);
+        Vec3 center = player.position();
+        for (LivingEntity entity : entities) {
+            Vec3 dir = entity.position().subtract(center).normalize();
+            entity.setDeltaMovement(entity.getDeltaMovement().add(
+                    dir.scale(0.5)));
+            entity.hurtMarked = true;
+        }
     }
 }

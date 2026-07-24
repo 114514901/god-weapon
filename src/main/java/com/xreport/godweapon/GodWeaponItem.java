@@ -92,6 +92,7 @@ public class GodWeaponItem extends Item {
         tooltip.add(Component.literal("§7飞行: " + (isEnabled(stack, "flight") ? "§a开启" : "§c关闭")));
         tooltip.add(Component.literal("§7夜视: " + (isEnabled(stack, "nightvision") ? "§a开启" : "§c关闭")));
         tooltip.add(Component.literal("§7范围挖掘: " + (isEnabled(stack, "veinminer") ? "§a开启" : "§c关闭")));
+        tooltip.add(Component.literal("§7生物排斥: " + (isEnabled(stack, "repel") ? "§a开启" : "§c关闭")));
         super.appendHoverText(stack, level, tooltip, flag);
     }
 
