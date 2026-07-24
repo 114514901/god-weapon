@@ -21,7 +21,7 @@ public class LoliUpgradeRecipe extends CustomRecipe {
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
         boolean hasBasic = false;
-        int stars = 0, netherite = 0, diamonds = 0;
+        int stars = 0, netherite = 0, diamond = 0, emerald = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack s = inv.getItem(i);
             if (s.isEmpty()) continue;
@@ -29,16 +29,27 @@ public class LoliUpgradeRecipe extends CustomRecipe {
                 if (hasBasic) return false;
                 hasBasic = true;
             } else if (s.is(Items.NETHER_STAR)) {
-                stars++;
+                stars += s.getCount();
             } else if (s.is(Items.NETHERITE_INGOT)) {
-                netherite++;
+                netherite += s.getCount();
             } else if (s.is(Items.DIAMOND)) {
-                diamonds++;
+                diamond += s.getCount();
+            } else if (s.is(Items.EMERALD)) {
+                emerald += s.getCount();
+            } else if (s.is(Items.GOLD_INGOT)) {
+                emerald += s.getCount(); // count gold too, just use existing counter
+            } else if (s.is(Items.IRON_INGOT)) {
+                emerald += s.getCount();
+            } else if (s.is(Items.LAPIS_LAZULI)) {
+                emerald += s.getCount();
+            } else if (s.is(Items.OBSIDIAN)) {
+                emerald += s.getCount();
             } else {
                 return false;
             }
         }
-        return hasBasic && stars >= 4 && netherite >= 4 && diamonds >= 4;
+        return hasBasic && stars >= 64 && netherite >= 64
+                && diamond >= 64 && emerald >= 576; // 9 stacks misc
     }
 
     @Override
