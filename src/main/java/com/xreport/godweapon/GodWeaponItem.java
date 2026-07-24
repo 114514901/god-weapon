@@ -90,6 +90,9 @@ public class GodWeaponItem extends Item {
         }
         return true;
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack,
                                                 ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }
