@@ -1,6 +1,6 @@
 {
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "godweapon:item/god_weapon"
+		"layer0": "loli_reborn:item/loli_pickaxe"
 	}
 }

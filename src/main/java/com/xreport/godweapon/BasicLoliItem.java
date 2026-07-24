@@ -51,9 +51,8 @@ public class BasicLoliItem extends DiggerItem {
 
     private static void addLevel(List<Component> t, ItemStack s, String key, int max, String label) {
         int cur = s.getOrCreateTag().getInt(key);
-        StringBuilder bar = new StringBuilder(cur == max ? "§a" : "§e");
-        for (int i = 0; i < max; i++) bar.append(i < cur ? "■" : "□");
-        t.add(Component.literal("§7" + label + ": " + bar));
+        String color = cur == max ? "§a" : "§e";
+        t.add(Component.literal("§7" + label + ": " + color + cur + "/" + max));
     }
 
     @Override
