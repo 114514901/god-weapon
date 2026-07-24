@@ -53,6 +53,7 @@ public class EffectTickHandler {
             if (GodWeaponItem.isEnabled(weapon, "repel")) {
                 repelEntities(player, weapon);
             }
+            player.setInvisible(GodWeaponItem.isEnabled(weapon, "stealth"));
         }
 
         if (!flying && flyingPlayers.contains(name)) {

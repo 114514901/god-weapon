@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "godweapon.refmap.json",
   "mixins": [
-    "EntityRemoveMixin"
+    "EntityRemoveMixin",
+    "EntityFilterMixin"
   ]
 }

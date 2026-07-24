@@ -83,6 +83,10 @@ public class GodWeaponItem extends Item {
                 + " §7[" + getRadius(s, rk) + "]"));
     }
 
+    private static void addStatus(List<Component> t, ItemStack s, String k, String label) {
+        t.add(Component.literal(label + ": " + (isEnabled(s, k) ? "§a●" : "§8●")));
+    }
+
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         if (!player.level().isClientSide && !player.isCreative()) {
