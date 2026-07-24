@@ -20,8 +20,8 @@ public class LoliUpgradeRecipe extends CustomRecipe {
 
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
-        boolean hasBasic = false, hasStar = false;
-        int stars = 0;
+        boolean hasBasic = false;
+        int stars = 0, netherite = 0, diamonds = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack s = inv.getItem(i);
             if (s.isEmpty()) continue;
@@ -30,11 +30,15 @@ public class LoliUpgradeRecipe extends CustomRecipe {
                 hasBasic = true;
             } else if (s.is(Items.NETHER_STAR)) {
                 stars++;
+            } else if (s.is(Items.NETHERITE_INGOT)) {
+                netherite++;
+            } else if (s.is(Items.DIAMOND)) {
+                diamonds++;
             } else {
                 return false;
             }
         }
-        return hasBasic && stars == 4;
+        return hasBasic && stars >= 4 && netherite >= 4 && diamonds >= 4;
     }
 
     @Override
@@ -56,7 +60,7 @@ public class LoliUpgradeRecipe extends CustomRecipe {
 
     @Override
     public boolean canCraftInDimensions(int w, int h) {
-        return w * h >= 5;
+        return w * h >= 9;
     }
 
     @Override
