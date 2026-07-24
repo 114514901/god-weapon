@@ -1,6 +1,7 @@
 package com.xreport.godweapon;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -83,7 +84,12 @@ public class GodWeaponItem extends Item {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack,
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
+        if (!player.level().isClientSide && !player.isCreative()) {
+            player.level().destroyBlock(pos, true, player);
+        }
+        return true;
+    }
                                                 ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }
