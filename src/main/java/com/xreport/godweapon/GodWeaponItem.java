@@ -7,7 +7,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
@@ -34,34 +32,13 @@ public class GodWeaponItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND) {
             if (player.isShiftKeyDown() && isEnabled(stack, "veinminer")) {
-                mineArea(level, player, stack);
+                mineArea(level, player);
             } else {
                 clearEntities(level, player);
             }
             player.getCooldowns().addCooldown(this, 20);
         }
         return InteractionResultHolder.success(stack);
-    }
-
-    private void mineArea(Level level, Player player, ItemStack stack) {
-        int radius = 3;
-        BlockPos center = player.blockPosition();
-        int count = 0;
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    BlockPos pos = center.offset(x, y, z);
-                    if (pos.equals(center)) continue;
-                    BlockState state = level.getBlockState(pos);
-                    if (state.isAir()) continue;
-                    if (state.getDestroySpeed(level, pos) < 0) continue;
-                    level.destroyBlock(pos, true, player);
-                    count++;
-                }
-            }
-        }
-        player.displayClientMessage(
-                Component.literal("§e挖掘了 " + count + " 个方块"), true);
     }
 
     private void clearEntities(Level level, Player player) {
@@ -80,6 +57,27 @@ public class GodWeaponItem extends Item {
         }
         player.displayClientMessage(
                 Component.literal("§c清除了 " + entities.size() + " 个实体"), true);
+    }
+
+    private void mineArea(Level level, Player player) {
+        int radius = 3;
+        BlockPos center = player.blockPosition();
+        int count = 0;
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    BlockPos pos = center.offset(x, y, z);
+                    if (pos.equals(center)) continue;
+                    BlockState state = level.getBlockState(pos);
+                    if (state.isAir()) continue;
+                    if (state.getDestroySpeed(level, pos) < 0) continue;
+                    level.destroyBlock(pos, true, player);
+                    count++;
+                }
+            }
+        }
+        player.displayClientMessage(
+                Component.literal("§e挖掘了 " + count + " 个方块"), true);
     }
 
     @Override
@@ -111,27 +109,13 @@ public class GodWeaponItem extends Item {
         stack.getOrCreateTag().putBoolean(key, !current);
     }
 
-    public static void applyEffects(Player player, ItemStack stack) {
-        if (isEnabled(stack, "invincible")) {
-            player.getAbilities().invulnerable = true;
+    public static ItemStack findInInventory(Player player) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof GodWeaponItem) return stack;
         }
-        if (isEnabled(stack, "flight")) {
-            player.getAbilities().mayfly = true;
+        if (player.getOffhandItem().getItem() instanceof GodWeaponItem) {
+            return player.getOffhandItem();
         }
-        if (isEnabled(stack, "nightvision")) {
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false));
-        }
-    }
-
-    public static void clearEffects(Player player, ItemStack stack) {
-        if (!isEnabled(stack, "invincible")) {
-            player.getAbilities().invulnerable = false;
-        }
-        if (!isEnabled(stack, "flight")) {
-            if (!player.isCreative() && !player.isSpectator()) {
-                player.getAbilities().mayfly = false;
-                player.getAbilities().flying = false;
-            }
-        }
+        return null;
     }
 }
