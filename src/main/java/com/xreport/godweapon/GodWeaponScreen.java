@@ -117,6 +117,8 @@ public class GodWeaponScreen extends Screen {
         }).pos(cx + BTN_W + 4, y[0]).size(60, BTN_H).build());
         y[0] += 24;
     }
+
+    private void addSliderOnly(int cx, int[] y, String radiusKey, String label) {
         addRenderableWidget(Button.builder(Component.literal(label), b -> {})
                 .pos(cx, y[0]).size(BTN_W, BTN_H).build());
         addRenderableWidget(new RadiusSlider(
