@@ -43,10 +43,10 @@ public class NetworkHandler {
         }
     }
 
-    public record CycleRadiusPacket(String key) {
-        public void encode(FriendlyByteBuf buf) { buf.writeUtf(key); }
+    public record CycleRadiusPacket(String key, int value) {
+        public void encode(FriendlyByteBuf buf) { buf.writeUtf(key); buf.writeInt(value); }
         public static CycleRadiusPacket decode(FriendlyByteBuf buf) {
-            return new CycleRadiusPacket(buf.readUtf());
+            return new CycleRadiusPacket(buf.readUtf(), buf.readInt());
         }
         public void handle(Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
@@ -54,7 +54,7 @@ public class NetworkHandler {
                 if (player == null) return;
                 ItemStack stack = player.getMainHandItem();
                 if (stack.getItem() instanceof GodWeaponItem) {
-                    GodWeaponItem.cycleRadius(stack, key);
+                    GodWeaponItem.setRadius(stack, key, value);
                 }
             });
             ctx.get().setPacketHandled(true);

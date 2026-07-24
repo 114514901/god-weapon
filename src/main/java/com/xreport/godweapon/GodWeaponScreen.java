@@ -9,9 +9,9 @@ import net.minecraft.world.item.ItemStack;
 public class GodWeaponScreen extends Screen {
 
     private final ItemStack stack;
-    private static final int BTN_W = 140;
+    private static final int BTN_W = 120;
     private static final int BTN_H = 20;
-    private static final int RBTN_W = 40;
+    private static final int SLIDER_W = 60;
 
     public GodWeaponScreen(ItemStack stack) {
         super(Component.literal("God Weapon 能力菜单"));
@@ -45,7 +45,7 @@ public class GodWeaponScreen extends Screen {
             NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.TogglePacket(key));
             GodWeaponItem.toggle(stack, key);
             rebuildWidgets();
-        }).pos(cx, y).size(BTN_W + RBTN_W + 4, BTN_H).build());
+        }).pos(cx, y).size(BTN_W + SLIDER_W + 4, BTN_H).build());
     }
 
     private void addRadius(int cx, int y, String key, String radiusKey, String label) {
@@ -55,12 +55,8 @@ public class GodWeaponScreen extends Screen {
             rebuildWidgets();
         }).pos(cx, y).size(BTN_W, BTN_H).build());
 
-        int r = GodWeaponItem.getRadius(stack, radiusKey);
-        addRenderableWidget(Button.builder(Component.literal("§7" + r), b -> {
-            NetworkHandler.CHANNEL.sendToServer(new NetworkHandler.CycleRadiusPacket(radiusKey));
-            GodWeaponItem.cycleRadius(stack, radiusKey);
-            rebuildWidgets();
-        }).pos(cx + BTN_W + 4, y).size(RBTN_W, BTN_H).build());
+        addRenderableWidget(new RadiusSlider(
+                cx + BTN_W + 4, y, SLIDER_W, BTN_H, stack, radiusKey));
     }
 
     private Component statusText(String key, String label) {

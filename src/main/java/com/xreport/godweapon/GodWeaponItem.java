@@ -116,17 +116,8 @@ public class GodWeaponItem extends Item {
         return Math.max(1, stack.getOrCreateTag().getInt(key));
     }
 
-    public static void cycleRadius(ItemStack stack, String key) {
-        int[] presets = {4, 8, 16, 32};
-        int current = getRadius(stack, key);
-        int next = presets[0];
-        for (int i = 0; i < presets.length; i++) {
-            if (presets[i] == current) {
-                next = presets[(i + 1) % presets.length];
-                break;
-            }
-        }
-        stack.getOrCreateTag().putInt(key, next);
+    public static void setRadius(ItemStack stack, String key, int value) {
+        stack.getOrCreateTag().putInt(key, value);
     }
 
     public static ItemStack findInInventory(Player player) {
