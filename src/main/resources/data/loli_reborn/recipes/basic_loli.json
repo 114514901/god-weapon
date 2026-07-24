@@ -1,13 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " D ",
-    "DSD",
-    " D "
+    "APS",
+    " I ",
+    " I "
   ],
   "key": {
-    "D": { "item": "minecraft:diamond" },
-    "S": { "item": "minecraft:stick" }
+    "A": { "item": "minecraft:iron_axe" },
+    "P": { "item": "minecraft:iron_pickaxe" },
+    "S": { "item": "minecraft:iron_shovel" },
+    "I": { "item": "minecraft:iron_ingot" }
   },
   "result": {
     "item": "loli_reborn:basic_loli"

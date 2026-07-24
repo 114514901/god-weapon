@@ -34,11 +34,9 @@ public class EffectTickHandler {
         if (player.level().isClientSide) return;
 
         ItemStack weapon = GodWeaponItem.findInInventory(player);
-        boolean hasBasic = findBasicLoli(player) != null;
         String name = player.getName().getString();
 
-        boolean flying = (weapon != null && GodWeaponItem.isEnabled(weapon, "flight"))
-                || (hasBasic && findBasicLoli(player).getOrCreateTag().getBoolean("flight"));
+        boolean flying = (weapon != null && GodWeaponItem.isEnabled(weapon, "flight"));
 
         if (flying) {
             flyingPlayers.add(name);
@@ -121,13 +119,6 @@ public class EffectTickHandler {
             entity.setDeltaMovement(entity.getDeltaMovement().add(dir.scale(0.5)));
             entity.hurtMarked = true;
         }
-    }
-
-    private static ItemStack findBasicLoli(Player player) {
-        for (ItemStack s : player.getInventory().items)
-            if (s.getItem() instanceof BasicLoliItem) return s;
-        if (player.getOffhandItem().getItem() instanceof BasicLoliItem) return player.getOffhandItem();
-        return null;
     }
 
     @SubscribeEvent
